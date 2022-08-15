@@ -8,6 +8,9 @@
         <module>inmemory</module>
         <module>inmemory-role</module>
         <module>jdbc</module>
+        <module>memoryUserDetails</module>
+        <module>jdbcUserDetailService</module>
+        <module>user-role</module>
     </modules>
 
 
