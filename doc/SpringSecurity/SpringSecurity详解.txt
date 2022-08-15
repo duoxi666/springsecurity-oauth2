@@ -1,0 +1,131 @@
+了解Spring Security
+    Spring Security是基于Spring的安全框架。它提供全面的安全性解决方案,
+    同时在Web请求级和方法调用级处理身份确认和授权。在Spring Framework基础上,
+    Spring Security充分利用了依赖注入(DI)和面向切面编程(AOP)功能,为应用系统提供声明式
+    的安全访问控制功能,减少了为企业系统安全控制编写大量重复代码的工作。是一个轻量级的框架。
+    它与Spring MVC很好地集成。
+
+
+1.1 Spring Security核心功能
+    (1) 认证(你是谁,用户/设备/系统)
+    (2) 验证(你能干什么,也叫权限控制/授权,允许执行的操作)
+
+
+1.2 spring security原理
+    基于Filter,Servlet,AOP实现身份认证和权限验证。
+
+
+使用的框架和技术
+    spring boot2.0.6版本
+    spring security 5.0.9版本
+    maven3以上
+    jdk8以上
+    idea2019
+
+
+
+第一章 spring security初探 (参考模块ch01-first)
+
+    1.引入spring security的坐标
+
+    2.编写controller类
+
+    3.启动服务访问类时,会进入一个spring security的登录页面。
+
+    4.输入用户名user和日志打印的密码:Using generated security password:
+
+    5.验证通过后,访问成功
+
+    6.自定义用户名和密码,需要在spring boot配置文件中设置登录的用户名和密码
+
+    7.//排除Security的配置,让它不启用,这里排除后,就不会有security的验证功能了
+
+      @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+
+
+第二章     使用内存中的用户信息,来进行验证 (ch02-immemory)
+    1.使用WebSecurityConfigureAdapter 控制安全管理的内容。 (参考MyWebSecurityConfig类)
+        需要做的使用: 继承WebSecurityConfigureAdapter,重写方法。实现自定义的认证信息。
+
+
+第三章 基于角色Role的身份认证,同一个用户可以有不同的角色,同时可以开启对方法级别的认证。 (参考模块ch03-immemory-role)
+    基于角色的实现步骤:
+        1.设置用户的角色
+        2.继承WebSecurityConfigurerAdapter,重写 protected void configure(AuthenticationManagerBuilder auth)
+            重写configure()方法,指定用户的roles。
+
+        3.在配置类上面添加启用方法级别验证的注解@EnableGlobalMethodSecurity(prePostEnabled = true)
+        4.在处理器方法的上面加入角色的信息,指定方法可以访问的角色列表。
+
+第四章 基于jdbc的用户认证
+    1) 从数据库mysql中获取用户的身份信息(用户名,密码,角色)
+    在spring security框架对象用户信息的表示类是UserDetails.
+    UserDetails是一个接口,高度抽象的用户信息类(相当于项目中的User类)
+
+        User类: 是UserDetails接口的实现类,构造方法有三个参数:
+            username, password, authorities
+
+    需要像spring security提供User对象,这个对象来自数据库查询。
+
+    2) 实现UserDetailsService接口
+    重写方法UserDetails loadUserByUsername(String var1)
+    在方法中获取数据库的用户信息,也就是执行数据库的查询。条件是用户
+    名称。
+
+
+认证和授权
+    authentication: 认证,认证访问者是谁。
+        一个用户或者一个其他系统是不是当前要访问的系统中的有效用户。
+    authorization:授权,访问者能做什么。
+        比如说张三用户要访问一个公司oa系统,首先要判断zhangsan是不是公司中的有效用户。
+        认证张三是不是有效用户,是不是公司中的职员。
+
+    授权: 判断张三能否做某些操作,如果张三是个领导可以去批准下级的请假,
+        其他的操作。
+            如果张三只是一个普通的用户,只能看自己的相关数据,只能提交请假申请等等。
+
+
+
+
+Spring security中认证的接口和类
+
+        (1)UserDetails: 接口,表示用户信息的。
+
+            boolean isAccountNonExpired():账户是否过期
+
+            boolean isAccountNonLocked():账号是否锁定
+
+            boolean isCredentialsNonExpired():证书是否过期
+
+            boolean isEnable();账号是否启用。
+
+            Collection<? extends GrantedAuthority> getAuthorities(); 权限的集合
+
+            User实现类
+            org.springframework.security.core.userdetails.User
+
+            可以:自定义类实现UserDetails接口,作为你的系统中的用户类。这个类可以交给Spring Security使用。
+
+
+        (2)UserDetailsService接口:
+        主要作用: 获取用户信息,得到是UserDetails对象。一般项目中都需要自定义类实现这个接口,
+        从数据库中获取数据。
+
+        一个方法需要实现:
+        UserDetails loadUserByUsername(String var1): 根据用户名称,获取用户信息(用户名称,密码,角色集合,是否可用,是否锁定等信息)。
+
+
+        UserDetailsService接口的实现类:
+
+        1.InMemoryUserDetailsManager: 在内存中维护用户信息。
+            优点: 使用方便。
+            缺点: 数据不是持久的。系统重启后,数据就恢复原样。
+
+        2.JdbcUserDetailsManager: 用户信息存放在数据库中,底层使用jdbcTemplate操作数据库。
+            可以同JdbcUserDetailsManager中的方法完成用户的管理。
+
+                createUser: 创建用户
+                updateUser: 更新用户
+                deleteUser: 删除用户
+                userExists: 判断用户是否存在
+

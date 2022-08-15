@@ -1,0 +1,18 @@
+@password=1efc879f-ff1b-4dce-a618-5c4312732523
+### 这里设置Basic 就被BasicAuthenticationFilter过滤器捕获到判断用户名和密码
+GET http://localhost:8080/api/greeting HTTP/1.1
+Authorization: Basic user {{password}}
+
+### 这里需要关闭csrf跨站域请求伪造防护
+POST http://localhost:8080/api/makeGreeting?name="测试" HTTP/1.1
+Authorization: Basic user {{password}}
+Content-Type: application/json
+
+{
+    "gender": "男",
+    "idNo": "88888888"
+}
+
+### 这里需要关闭csrf跨站域请求伪造防护
+PUT http://localhost:8080/api/updateGreeting/PUT测试 HTTP/1.1
+Authorization: Basic user {{password}}

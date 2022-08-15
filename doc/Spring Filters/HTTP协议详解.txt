@@ -1,0 +1,45 @@
+HTTP请求
+1.Start(请求行) Line: 方法 + URI + 版本号
+    GET https://www.baidui.com/ HTTP/1.1
+
+2.请求头(Headers)
+    Request Headers:
+            HOST:
+            User-Agent:
+            Accept:
+
+    General Headers:
+            Connection: keep-alive
+            Upgrade-Insecure-Requests: 1
+
+    Entity Headers:
+            Content-Type: application/json       : 传输数据时,要用这个来指定请求体的数据类型,不然HTTP协议无法识别,会报415的错误
+
+3.请求体(Request Body)
+    Data:{}
+
+在vscode安装rest Client插件,然后创建Rest.http文件测试
+
+HTTP响应
+
+一个典型的状态行: HTTP/1.1 201 Created。
+HTTP/1.1 200
+
+响应头
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Type: text/plain;charset=UTF-8
+Content-Length: 35
+Date: Sat, 12 Feb 2022 07:08:59 GMT
+Connection: close
+
+响应体
+Hello World,"测试"!
+男!
+88888888
+
+

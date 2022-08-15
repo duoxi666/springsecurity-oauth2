@@ -1,0 +1,12 @@
+Spring Filters
+
+先认证再授权,安全框架主要解决的就是认证和授权两个问题
+
+任何Spring Web应用本质上只是一个Servlet
+Security Filter在HTTP请求到达你的Controller之前过滤每一个传入的HTTP请求。
+
+过程:
+1.客户端发起HTTP请求
+2.Security Filter拦截请求
+3.检查用户是否认证
+4.是的话,进入DispatcherServlet,否的话,HTTP 401未认证 或 403未授权
